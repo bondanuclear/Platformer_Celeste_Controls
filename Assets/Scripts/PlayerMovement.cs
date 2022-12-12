@@ -18,6 +18,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] Transform raySpawnPoint;
     [SerializeField] float rayLength = 2f;
     [SerializeField] LayerMask groundLayerMask;
+    [SerializeField] float jumpFallOff = 8f;
+    [SerializeField] float fallMultiplyer = 3f;
     // Start is called before the first frame update
     void Awake()
     {
@@ -29,8 +31,19 @@ public class PlayerMovement : MonoBehaviour
     {
         TickInput();
         CheckGroundTouch();
+        FallingGravity();
+        //Debug.Log(rigidbody2D.velocity + " rigidbody 2d velocity");
         movDir = new Vector2(horizontalInput, verticalInput);
         
+    }
+
+    private void FallingGravity()
+    {
+        
+        if(rigidbody2D.velocity.y < jumpFallOff || !hasJumped && rigidbody2D.velocity.y > 0)
+        {
+            rigidbody2D.velocity += Vector2.down * 9.8f * Time.deltaTime * fallMultiplyer;
+        }
     }
 
     private void CheckGroundTouch()
