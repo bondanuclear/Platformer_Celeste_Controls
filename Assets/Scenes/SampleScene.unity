@@ -166,15 +166,16 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: -0.3739275, y: 0.007095933}
-      - {x: -0.36229998, y: -0.3454742}
-      - {x: 0.3682717, y: -0.33655724}
-      - {x: 0.37893847, y: -0.005779743}
+    - - {x: -0.36829636, y: -0.002289176}
+      - {x: -0.3663626, y: -0.067094445}
+      - {x: -0.36605406, y: -0.3511053}
+      - {x: 0.3682717, y: -0.3440654}
+      - {x: 0.37143028, y: -0.0039026737}
       - {x: 0.20244196, y: -0.0031285286}
       - {x: 0.21437287, y: 0.33190545}
       - {x: -0.20216216, y: 0.3347591}
       - {x: -0.20077285, y: 0.02357725}
-      - {x: -0.18767056, y: 0.0104749575}
+      - {x: -0.19517866, y: -0.0026644096}
 --- !u!212 &117062910
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -957,6 +958,8 @@ GameObject:
   - component: {fileID: 1159885915}
   - component: {fileID: 1159885914}
   - component: {fileID: 1159885918}
+  - component: {fileID: 1159885920}
+  - component: {fileID: 1159885919}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1006,7 +1009,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 4edf411d963bb13408ee5d7d1ede5cb7, type: 2}
   m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 1
@@ -1094,11 +1097,8 @@ MonoBehaviour:
   playerMovementSpeed: 100
   jumpForce: 5.6
   movDir: {x: 0, y: 0}
+  state: 0
   isGrounded: 1
-  velocityChecker: {x: 0, y: 0}
-  horizontalInput: 0
-  verticalInput: 0
-  hasJumped: 0
   raySpawnPoint: {fileID: 1419317810}
   rayLength: 0.09
   groundLayerMask:
@@ -1110,6 +1110,34 @@ MonoBehaviour:
   smoothDashPower: 10
   dashCooldown: 0.5
   canDash: 1
+  timeToCoyoteJump: 0.2
+  coyoteCounter: 0
+--- !u!114 &1159885919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1159885913}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee061faaf7d966044b1d2d29bafdb0f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1159885920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1159885913}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1ebb6bcb6220b8468167b765a263e65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  velocityChecker: {x: 0, y: 0}
+  hasJumped: 0
 --- !u!1 &1322891607
 GameObject:
   m_ObjectHideFlags: 0
