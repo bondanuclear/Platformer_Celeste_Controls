@@ -18,6 +18,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] bool isGrounded = true;
     [Header("Inputs checking")]
     PlayerInput playerInput;
+    AnimatorController animatorController;
     // [SerializeField] Vector2 velocityChecker;
     // [SerializeField] float horizontalInput;
     // [SerializeField] float verticalInput;
@@ -46,6 +47,8 @@ public class PlayerMovement : MonoBehaviour
         rigidbody2D = GetComponent<Rigidbody2D>();
         state = State.Walking;
         playerInput = GetComponent<PlayerInput>();
+        animatorController = GetComponent<AnimatorController>();
+
     }
 
     public void HandleMovementChecks()
@@ -73,7 +76,9 @@ public class PlayerMovement : MonoBehaviour
                 }
                 break;
         }
-
+        if(MathF.Abs(rigidbody2D.velocity.x) > 0.1f) animatorController.StartWalking();
+        else animatorController.StopWalking();
+        CheckLeftWallTouch();
         //Debug.Log(rigidbody2D.velocity + " rigidbody 2d velocity");
         movDir = new Vector2(playerInput.HorizontalInput, playerInput.VerticalInput);
         timeSinceLastDash += Time.deltaTime;
@@ -171,6 +176,7 @@ public class PlayerMovement : MonoBehaviour
     private void OnDrawGizmos() {
         Gizmos.color = Color.cyan;
         Gizmos.DrawRay(raySpawnPoint.position, Vector3.down * rayLength);
+        Gizmos.DrawRay(raySpawnPoint.position, Vector3.left * distanceToWall);
     }
     private void HandleSmoothDash()
     {   
@@ -190,4 +196,44 @@ public class PlayerMovement : MonoBehaviour
         // teleporting
         rigidbody2D.MovePosition((Vector2)transform.position + movDir.normalized * dashPower);
     }
+
+    #region WallSliding 
+    [SerializeField] float distanceToWall = 1f;
+    [SerializeField] bool _touchingLeftWall;
+    [SerializeField] bool _isClimbingUp = false;
+    [SerializeField] bool _isSlidingDown = false;
+    [SerializeField] LayerMask wallLayerMask;
+    private void CheckLeftWallTouch()
+    {
+        bool leftWallTouched = Physics2D.Raycast(raySpawnPoint.position, Vector3.left, distanceToWall,
+       wallLayerMask);
+        if(leftWallTouched)
+        {
+            if(movDir.x < 0 && movDir.y > 0) {
+                Debug.Log("i see.. you want to climb up");
+                _isClimbingUp = true;
+                _isSlidingDown = false;
+            }
+            else if(movDir.x < 0)
+            {
+                _isSlidingDown = true;
+                _isClimbingUp = false;
+                Debug.Log("weeee sliding doooown");
+            }
+            else if(movDir.x == 0)
+            {
+                _isClimbingUp = false;
+                _isSlidingDown = false;
+            }
+            
+            Debug.Log("Touching left wall");
+        }
+        else
+        {
+            _isClimbingUp = false;
+            _isSlidingDown = false;
+        }
+     
+    }
+    #endregion
 }
