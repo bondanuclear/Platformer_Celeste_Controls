@@ -62,9 +62,10 @@ public class PlayerMovement : MonoBehaviour
                 CheckCoyoteJump();
                 if (playerInput.JumpFlag)
                 {
-                    Debug.Log("Should jump");
+                    //Debug.Log("Should jump");
                     HandleJumping();
                 }
+                
                 break;
             case State.Dashing:
                 float downMultiplyer = 3f;
@@ -79,6 +80,7 @@ public class PlayerMovement : MonoBehaviour
         if(MathF.Abs(rigidbody2D.velocity.x) > 0.1f) animatorController.StartWalking();
         else animatorController.StopWalking();
         CheckLeftWallTouch();
+        CheckRightWallTouch();
         //Debug.Log(rigidbody2D.velocity + " rigidbody 2d velocity");
         movDir = new Vector2(playerInput.HorizontalInput, playerInput.VerticalInput);
         timeSinceLastDash += Time.deltaTime;
@@ -89,6 +91,7 @@ public class PlayerMovement : MonoBehaviour
         {
             case State.Walking:
                 HandleMovement();
+                HandleClimbing();
                 break;
             case State.Dashing:
                 HandleSmoothDash();
@@ -118,6 +121,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void FallingGravity()
     {
+        
         if (rigidbody2D.velocity.y < jumpFallOff || !Input.GetKey(KeyCode.C) && rigidbody2D.velocity.y > 0)
         {
             
@@ -192,7 +196,7 @@ public class PlayerMovement : MonoBehaviour
     // deprecated
     private void HandleDash()
     {
-        Debug.Log($"Should dash in {movDir} direction");
+        //Debug.Log($"Should dash in {movDir} direction");
         // teleporting
         rigidbody2D.MovePosition((Vector2)transform.position + movDir.normalized * dashPower);
     }
@@ -200,9 +204,13 @@ public class PlayerMovement : MonoBehaviour
     #region WallSliding 
     [SerializeField] float distanceToWall = 1f;
     [SerializeField] bool _touchingLeftWall;
-    [SerializeField] bool _isClimbingUp = false;
-    [SerializeField] bool _isSlidingDown = false;
+    [SerializeField] bool _isClimbingUpLeft = false;
+    [SerializeField] bool _isSlidingDownLeft = false;
+    [SerializeField] bool _isClimbingUpRight = false;
+    [SerializeField] bool _isSlidingDownRight = false;
     [SerializeField] LayerMask wallLayerMask;
+    [SerializeField] float speedOfClimbing = 10f;
+    [SerializeField] float speedofSliding = 5f;
     private void CheckLeftWallTouch()
     {
         bool leftWallTouched = Physics2D.Raycast(raySpawnPoint.position, Vector3.left, distanceToWall,
@@ -210,30 +218,75 @@ public class PlayerMovement : MonoBehaviour
         if(leftWallTouched)
         {
             if(movDir.x < 0 && movDir.y > 0) {
-                Debug.Log("i see.. you want to climb up");
-                _isClimbingUp = true;
-                _isSlidingDown = false;
+                //Debug.Log("i see.. you want to climb up");
+                _isClimbingUpLeft = true;
+                _isSlidingDownLeft = false;
             }
             else if(movDir.x < 0)
             {
-                _isSlidingDown = true;
-                _isClimbingUp = false;
-                Debug.Log("weeee sliding doooown");
+                _isSlidingDownLeft = true;
+                _isClimbingUpLeft = false;
+                //Debug.Log("weeee sliding doooown");
             }
             else if(movDir.x == 0)
             {
-                _isClimbingUp = false;
-                _isSlidingDown = false;
+                _isClimbingUpLeft = false;
+                _isSlidingDownLeft = false;
             }
             
-            Debug.Log("Touching left wall");
+            //Debug.Log("Touching left wall");
         }
         else
         {
-            _isClimbingUp = false;
-            _isSlidingDown = false;
+            _isClimbingUpLeft = false;
+            _isSlidingDownLeft = false;
         }
-     
+    
+    }
+    private void CheckRightWallTouch()
+    {
+        bool rightWallTouched = Physics2D.Raycast(raySpawnPoint.position, Vector3.right, distanceToWall,
+       wallLayerMask);
+        if (rightWallTouched)
+        {
+            if (movDir.x > 0 && movDir.y > 0)
+            {
+                
+                _isClimbingUpRight = true;
+                _isSlidingDownRight = false;
+            }
+            else if (movDir.x < 0)
+            {
+                _isSlidingDownRight = true;
+                _isClimbingUpRight = false;
+                
+            }
+            else if (movDir.x == 0)
+            {
+                _isClimbingUpRight = false;
+                _isSlidingDownRight = false;
+            }
+
+            
+        }
+        else
+        {
+            _isClimbingUpRight = false;
+            _isSlidingDownRight = false;
+        }
+    }
+    private void HandleClimbing()
+    {
+        if(_isClimbingUpLeft || _isClimbingUpRight)
+        {
+            //Debug.Log("trying to climp up" + rigidbody2D.velocity);
+            rigidbody2D.velocity = new Vector2(0, movDir.y) * speedOfClimbing * Time.fixedDeltaTime;
+        
+        }
+        else if(_isSlidingDownLeft || _isSlidingDownRight)
+        {
+            rigidbody2D.velocity = Vector2.down * Time.fixedDeltaTime * speedofSliding; 
+        }
     }
     #endregion
 }
