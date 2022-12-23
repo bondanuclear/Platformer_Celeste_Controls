@@ -26,6 +26,7 @@ public class PlayerMovement : MonoBehaviour
     
     [Header("Ground Touch Check")]
     [SerializeField] Transform raySpawnPoint;
+   
     [SerializeField] float rayLength = 2f;
     [SerializeField] LayerMask groundLayerMask;
     [SerializeField] float jumpFallOff = 8f;
