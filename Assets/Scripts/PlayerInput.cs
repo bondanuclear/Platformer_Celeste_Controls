@@ -22,7 +22,7 @@ public class PlayerInput : MonoBehaviour
         else DashFlag = false;
 
         
-        Debug.Log("DashFlag " + DashFlag);
+        //Debug.Log("DashFlag " + DashFlag);
     }
     // private void Update() {
     //     TickInput();
